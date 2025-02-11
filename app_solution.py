@@ -15,6 +15,8 @@ st.set_page_config(
     layout="centered",
     initial_sidebar_state="collapsed",
 )
+# Title
+st.title("💬 Sakila AI Agent")
 
 ########################################################
 # 3. Initialize the conversation history
