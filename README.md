@@ -58,13 +58,14 @@ You can ask questions like:
 
 ## 🗄️ Project Structure
 
-- `app.py`: Main Streamlit application
+- `app.py`: Empty application file that you'll develop following the Developer Guide
+- `app_solution.py`: Complete implementation of the Streamlit application (reference solution)
 - `agent/`: Directory containing agent-related modules
   - `agent.py`: Core agent implementation
   - `tools.py`: Database querying tools
   - `prompts.py`: System prompts
   - `sakila_schema.py`: Database schema information
-- `Guide.ipynb`: Jupyter notebook with detailed implementation guide
+- `Developer_Guide.ipynb`: Step-by-step Jupyter notebook that teaches you how to build the application
 - `.env.sample`: Sample environment variables file
 
 ## 🔧 Technical Details
@@ -77,14 +78,23 @@ The project combines several key technologies:
 
 The agent uses a sophisticated system prompt that includes the complete Sakila database schema, allowing it to generate accurate SQL queries based on natural language questions.
 
-## 📚 Understanding the Implementation
+## 📚 Learning and Development
 
-To understand how this project is built, check out the `Guide.ipynb` notebook in the repository. The guide walks through the complete implementation process, including:
-- Setting up the OpenAI API
-- Creating system prompts
-- Implementing tool calls
-- Building the database querying functionality
-- Developing the Streamlit interface
+This repository is designed as a learning resource. Here's how to use it:
+
+1. Start with `Developer_Guide.ipynb` - This comprehensive Jupyter notebook walks you through all the concepts needed to build the AI agent:
+   - Setting up the OpenAI API
+   - Understanding system prompts
+   - Implementing tool calls
+   - Building the database querying functionality
+   - Developing the Streamlit interface
+
+2. Development Process:
+   - The `app.py` file is intentionally empty - you'll build it step by step following the Developer Guide
+   - Reference `app_solution.py` only after attempting to build the application yourself
+   - The Guide teaches you all the concepts necessary to create a functional AI agent that can query databases using natural language
+
+The goal is to help you understand how to build an AI-powered data querying agent from scratch, with practical, hands-on experience.
 
 ## 📝 License
 
