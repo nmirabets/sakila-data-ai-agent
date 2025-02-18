@@ -16,7 +16,7 @@ def agent(messages):
     completion = client.chat.completions.create(
         model="gpt-4o-mini",
         tools=TOOLS, # here we pass the tools to the LLM
-        messages=messages
+        messages=messages,
     )
 
     # Get the response from the LLM
