@@ -1,46 +1,29 @@
-########################################################
-# Import libraries
-########################################################
+import os
+from openai import OpenAI
 import streamlit as st
-from agent.agent import agent
-from agent.prompts import SYSTEM_PROMPT
+from dotenv import load_dotenv
 
-########################################################
-# Streamlit app Title
-########################################################
-st.title("💬 Sakila Data Agent")
+load_dotenv()
 
-########################################################
-# Initialize session state
-########################################################
+openai_api_key = os.getenv("OPENAI_API_KEY")
+
+st.title("💬 Chatbot")
+st.caption("🚀 A Streamlit chatbot powered by OpenAI")
 if "messages" not in st.session_state:
-    st.session_state["messages"] = [
-        {"role": "system", 
-         "content": SYSTEM_PROMPT},
-        {"role": "assistant", 
-         "content": "How can I help you?"}
-    ]
+    st.session_state["messages"] = [{"role": "assistant", "content": "How can I help you?"}]
 
-########################################################
-# Display messages
-########################################################
-for msg in st.session_state.messages[1:]:
+for msg in st.session_state.messages:
     st.chat_message(msg["role"]).write(msg["content"])
 
-########################################################
-# Get user input
-########################################################
 if prompt := st.chat_input():
+    if not openai_api_key:
+        st.info("Please add your OpenAI API key to continue.")
+        st.stop()
 
-    # Add user message to session state
+    client = OpenAI(api_key=openai_api_key)
     st.session_state.messages.append({"role": "user", "content": prompt})
-    # Display user message
     st.chat_message("user").write(prompt)
-    
-    # Get agent response
-    msg = agent(st.session_state.messages)
-
-    # Add agent response to session state
+    response = client.chat.completions.create(model="gpt-3.5-turbo", messages=st.session_state.messages)
+    msg = response.choices[0].message.content
     st.session_state.messages.append({"role": "assistant", "content": msg})
-    # Display agent response
     st.chat_message("assistant").write(msg)
