@@ -1,8 +1,8 @@
 import json
 from dotenv import load_dotenv
 from openai import OpenAI
-from agent.tools import get_weather, get_data_df
-from agent.tools import TOOLS
+from ai.tools import get_weather, get_data_df
+from ai.tools import TOOLS
 
 
 load_dotenv()

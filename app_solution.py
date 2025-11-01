@@ -3,8 +3,8 @@
 ########################################################
 
 import streamlit as st
-from agent.agent import agent
-from agent.prompts import SYSTEM_PROMPT
+from ai.agent import agent
+from ai.prompts import SYSTEM_PROMPT
 
 ########################################################
 # 2. Set the page config
