@@ -6,7 +6,5 @@ SYSTEM_PROMPT = f"""
 - Generate SQL queries following the schema of the database. 
 
 DATABASE SCHEMA:
-
 {SAKILA_SCHEMA}
-
 """
