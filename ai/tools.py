@@ -3,28 +3,14 @@ import uuid
 import streamlit as st
 import json
 import pandas as pd
-from sqlalchemy import create_engine, text
 from dotenv import load_dotenv
+from .utils import connect_to_database
 
 
 load_dotenv()
 
 # Define the tools
 TOOLS = [
-    {
-        "type": "function",
-        "function": {
-            "name": "get_weather",
-            "description": "Get the weather in a given location",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "location": {"type": "string"}
-                    },
-                    "required": ["location"]
-                },
-            },
-    },
     {
         "type": "function",
         "function": {
@@ -41,26 +27,40 @@ TOOLS = [
     },
 ]
 
-# Define the weather tool python function
-def get_weather(location):
-    # Here we simulate the weather function with hardcoded values, just for testing
-    return f"The weather in {location} is sunny and 22°C"
 
 # Define the get_data_df tool python function
 def get_data_df(sql_query):
-    # Create SQL engine
-    password = os.getenv("DB_PASSWORD")
-    connection_string = 'mysql+pymysql://root:' + password + '@localhost/sakila'
-    engine = create_engine(connection_string)
-    # Execute query and create dataframe
-    with engine.connect() as connection:    
-        sql_query = text(sql_query)
-        result = connection.execute(sql_query)
-        df = pd.DataFrame(result.all())
-        # Show the SQL query
-        expander = st.expander("SQL Query")
-        expander.write(sql_query)
-        # Show the dataframe
-        st.dataframe(df)
-    return "Found the data you were looking for."
+    # Connect to database using the utils function
+    conn = connect_to_database()
+    
+    if conn is None:
+        st.error("❌ Failed to connect to the database")
+        return "Failed to connect to the database"
+    
+    try:
+        with conn.cursor() as cur:
+            cur.execute(sql_query)
+            results = cur.fetchall()
+            
+            # Get column names
+            column_names = [desc[0] for desc in cur.description]
+            
+            # Create DataFrame
+            df = pd.DataFrame(results, columns=column_names)
+            
+            # Show the SQL query
+            expander = st.expander("SQL Query")
+            expander.write(sql_query)
+            
+            # Show the dataframe
+            st.dataframe(df)
+            
+        return "Found the data you were looking for."
+        
+    except Exception as e:
+        st.error(f"❌ Error executing query: {e}")
+        return f"Error executing query: {e}"
+    
+    finally:
+        conn.close()
 
