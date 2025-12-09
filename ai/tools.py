@@ -1,10 +1,11 @@
 import os
 import uuid
 import streamlit as st
-import json
+import json 
 import pandas as pd
 from dotenv import load_dotenv
-from .utils import connect_to_database
+from .utils import connect_to_local_database, connect_to_cloud_database
+from sqlalchemy import create_engine, text
 
 
 load_dotenv()
@@ -27,11 +28,22 @@ TOOLS = [
     },
 ]
 
+def get_data_df_local(query):
+    # Connect to database using the utils function
+    conn = connect_to_local_database()
+    query = text(query)
+    result = conn.execute(query)
+    df = pd.DataFrame(result.all())
+    st.expander("SQL Query").write(query)
+    st.dataframe(df)
+    conn.close()
+    return "✅ Found the data you were looking for."
+
 
 # Define the get_data_df tool python function
-def get_data_df(sql_query):
+def get_data_df_cloud(sql_query):
     # Connect to database using the utils function
-    conn = connect_to_database()
+    conn = connect_to_cloud_database()
     
     if conn is None:
         st.error("❌ Failed to connect to the database")

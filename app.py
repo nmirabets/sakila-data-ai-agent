@@ -1,56 +1,24 @@
-########################################################
-# This is a starter template to develop the Sakila Data AI Agent. Use the concepts learned in the Developer Guide to build the full application.
-########################################################
-
+from openai import OpenAI
 import streamlit as st
 from dotenv import load_dotenv
-from ai.agent import agent
-from ai.prompts import SYSTEM_PROMPT
-import pandas as pd
-from ai.utils import upload_data, drop_all_tables, get_database_schema
 
 load_dotenv()
 
-st.title("📊 Data Agent")
-st.caption("🚀 A Streamlit Data Analytics Agent")
 
-if "file" not in st.session_state:
+st.title("💬 Chatbot")
+st.caption("🚀 A Streamlit chatbot powered by OpenAI")
+if "messages" not in st.session_state:
+    st.session_state["messages"] = [{"role": "assistant", "content": "How can I help you?"}]
 
-    drop_all_tables()
+for msg in st.session_state.messages:
+    st.chat_message(msg["role"]).write(msg["content"])
 
-    # File uploader (this will persist the uploaded file in session state)
-    uploaded_file = st.file_uploader("Upload a file to analyze", type=["csv"])
+if prompt := st.chat_input():
 
-    if uploaded_file is not None:
-        # Store the file in session state
-        st.session_state["file"] = uploaded_file
-        
-        # Read the file and convert it to a pandas dataframe
-        df = pd.read_csv(uploaded_file)
-        # Add a spinner to the page
-        with st.spinner("Creating table..."):
-            # Upload the file to the database   
-            result = upload_data(df)
-            st.success(result)
-            st.button("Continue to talk to the agent")
-else:
-    if "messages" not in st.session_state:
-        # Get the database schema
-        database_schema = get_database_schema()
-        SYSTEM_PROMPT = SYSTEM_PROMPT.format(database_schema=database_schema)
-        st.session_state["messages"] = [
-            {"role": "system", "content": SYSTEM_PROMPT},
-            {"role": "assistant", "content": "How can I help you?"}]
-
-    for msg in st.session_state["messages"][1:]:
-        st.chat_message(msg["role"]).write(msg["content"])
-
-    if prompt := st.chat_input():
-        # Add the user's message to the conversation & display it
-        st.session_state.messages.append({"role": "user", "content": prompt})
-        st.chat_message("user").write(prompt)
-
-        response = agent(st.session_state.messages)
-
-        st.session_state.messages.append({"role": "assistant", "content": response})
-        st.chat_message("assistant").write(response)
+    client = OpenAI()
+    st.session_state.messages.append({"role": "user", "content": prompt})
+    st.chat_message("user").write(prompt)
+    response = client.chat.completions.create(model="gpt-3.5-turbo", messages=st.session_state.messages)
+    msg = response.choices[0].message.content
+    st.session_state.messages.append({"role": "assistant", "content": msg})
+    st.chat_message("assistant").write(msg)

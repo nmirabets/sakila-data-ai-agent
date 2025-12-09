@@ -1,7 +1,7 @@
 import json
 from dotenv import load_dotenv
 from openai import OpenAI
-from ai.tools import get_data_df
+from ai.tools import get_data_df_local, get_data_df_cloud
 from ai.tools import TOOLS
 
 
@@ -29,7 +29,7 @@ def agent(messages):
             # Get the tool call arguments
             tool_call_arguments = json.loads(tool_call.function.arguments)
             if tool_call.function.name == "get_data_df":
-                return get_data_df(tool_call_arguments["sql_query"])
+                return get_data_df_local(tool_call_arguments["sql_query"])
     else:
         # If there are no tool calls, return the response content
         return response.content
