@@ -1,4 +1,5 @@
 import json
+import os
 from dotenv import load_dotenv
 from openai import OpenAI
 from ai.tools import get_data_df_local, get_data_df_cloud
@@ -9,12 +10,13 @@ load_dotenv()
 
 def agent(messages):
 
-    # Initialize the OpenAI client
-    client = OpenAI()
+    client = OpenAI(
+        api_key=os.environ["XAI_API_KEY"],
+        base_url="https://api.x.ai/v1",
+    )
 
-    # Make a ChatGPT API call with tool calling
     completion = client.chat.completions.create(
-        model="gpt-4o-mini",
+        model="grok-3-mini",
         tools=TOOLS, # here we pass the tools to the LLM
         messages=messages,
     )
