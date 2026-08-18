@@ -31,7 +31,8 @@ def agent(messages):
             # Get the tool call arguments
             tool_call_arguments = json.loads(tool_call.function.arguments)
             if tool_call.function.name == "get_data_df":
-                return get_data_df_local(tool_call_arguments["sql_query"])
+                return get_data_df_cloud(tool_call_arguments["sql_query"])
+                #return get_data_df_local(tool_call_arguments["sql_query"])
     else:
         # If there are no tool calls, return the response content
         return response.content

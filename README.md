@@ -39,7 +39,7 @@ pip install -r requirements.txt
 
 Or install core packages directly:
 ```bash
-pip install openai streamlit pymysql sqlalchemy python-dotenv pandas psycopg
+pip install openai streamlit pymysql sqlalchemy python-dotenv pandas "psycopg[binary]"
 ```
 
 ### 3. Set Up Your Database
